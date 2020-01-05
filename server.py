@@ -1,5 +1,6 @@
 # first of all import the socket library
 import socket
+import time
 from protocol_functions.parse_data import parse_welcome_message, check_finished
 from protocol_functions.get_params import get_params
 from math_operations.call_functions import recv_data
@@ -43,7 +44,10 @@ while True:
     recv = c.recv(1024)
     while not check_finished(recv):
         try:
-            c.send(b"answer : " + bytes(str(recv_data(get_params(recv))),'utf8') + b'\n')
+            start_time = time.time()
+            ans = bytes(str(recv_data(get_params(recv))), 'utf8')
+            end_time = time.time()
+            c.send(b"answer : " + ans + b' time: ' + bytes(str(end_time - start_time), 'utf8') + b'\n')
         except Exception:
             c.close()
             break
