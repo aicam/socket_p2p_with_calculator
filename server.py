@@ -3,12 +3,14 @@ import socket
 from protocol_functions.parse_data import parse_welcome_message, check_finished
 from protocol_functions.get_params import get_params
 from math_operations.call_functions import recv_data
+import sys
 # next create a socket object
 s = socket.socket()
 print("Socket successfully created")
 
 # reserve a port on your computer in our
 # case it is 12345 but it can be anything
+
 port = 12345
 
 # Next bind to the port
@@ -40,8 +42,22 @@ while True:
         continue
     recv = c.recv(1024)
     while not check_finished(recv):
-        c.send(b"answer : " + bytes(str(recv_data(get_params(recv))),'utf8') + b'\n')
-        recv = c.recv(1024)
-    c.send(b"FINISHED")
+        try:
+            c.send(b"answer : " + bytes(str(recv_data(get_params(recv))),'utf8') + b'\n')
+        except Exception:
+            c.close()
+            break
+        try:
+            recv = c.recv(1024)
+        except Exception:
+            c.close()
+            break
+    try:
+        c.send(b"FINISHED")
+    except Exception:
+        continue
     # Close the connection with the client
-    c.close()
+    try:
+        c.close()
+    except Exception:
+        continue
