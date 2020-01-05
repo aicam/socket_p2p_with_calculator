@@ -9,7 +9,7 @@ print("Socket successfully created")
 
 # reserve a port on your computer in our
 # case it is 12345 but it can be anything
-port = 1234
+port = 12345
 
 # Next bind to the port
 # we have not typed any ip in the ip field
@@ -40,8 +40,7 @@ while True:
         continue
     recv = c.recv(1024)
     while not check_finished(recv):
-        print(recv)
-        c.send(b"answer : " + bytes(str(recv_data(get_params(recv))),'utf8'))
+        c.send(b"answer : " + bytes(str(recv_data(get_params(recv))),'utf8') + b'\n')
         recv = c.recv(1024)
     c.send(b"FINISHED")
     # Close the connection with the client

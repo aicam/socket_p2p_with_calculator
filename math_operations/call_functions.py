@@ -10,5 +10,4 @@ def recv_data(params):
         'divide': Divide,
         'multiply': Multiply,
     }
-    print(params)
-    return return_array.get(params[0],lambda i:False)(params)
+    return return_array.get(params[0],lambda i:False)(params[1:])

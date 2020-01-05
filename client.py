@@ -19,7 +19,6 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 ClientTurn = False
         if not ClientTurn:
             data = s.recv(1024)
-            print(data)
             if str(data).__contains__('end') :
                 ClientTurn = True
 
