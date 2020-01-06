@@ -1,0 +1,1 @@
+p2p -serve - a.txt - /home/ali/PycharmProjects/az_socket/hello.txt
