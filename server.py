@@ -41,7 +41,11 @@ while True:
         c.send(b"failed connection")
         c.close()
         continue
-    recv = c.recv(1024)
+    try:
+        recv = c.recv(1024)
+    except Exception:
+        c.close()
+        continue
     while not check_finished(recv):
         try:
             start_time = time.time()
