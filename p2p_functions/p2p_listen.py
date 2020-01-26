@@ -3,18 +3,21 @@ from .p2p_send import transfer
 from .socket_binds import *
 import socket
 import time
-def add_listener(sock, files, hostname, transfer_port, com_port):
+def add_listener(com_sock, transfer_sock, files, hostname, com_port, transfer_port):
     data, addr = None, None
     client_sock = bind_socket_client()
     while True:
+        com_sock = bind_socket_server(com_port)
         time.sleep(1)
         try:
-            data, addr = sock.recvfrom(1024)
+            data, addr = com_sock.recvfrom(1024)
         except socket.error:
+            com_sock.close()
             continue
+        com_sock.close()
         message = data.decode('utf-8')
         if message.__contains__(hostname):
-            client_sock.sendto(data, ('0.0.0.0',com_port))
+            client_sock.sendto(data, ('192.168.1.105',com_port))
             continue
         if message.__contains__('p2p_server') and not message.__contains__(hostname):
             parse_thread = threading.Thread(target=parse_message,
@@ -35,7 +38,7 @@ def parse_message(msg, port, files, hostname, com_port):
             transfer(hostname,msg_args[2],found_item['path'],port, com_port)
 
 
-def start_listening(sock, files, hostname, transfer_port, com_port):
-    listening_thread = threading.Thread(target=add_listener, args=(sock, files, hostname, transfer_port, com_port,),
+def start_listening(com_sock, transfer_sock, files, hostname, com_port, transfer_port):
+    listening_thread = threading.Thread(target=add_listener, args=(com_sock, transfer_sock, files, hostname, com_port, transfer_port),
                                         daemon= True)
     return listening_thread
